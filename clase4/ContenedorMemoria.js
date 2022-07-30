@@ -36,11 +36,20 @@ class Contenedor{
     return []
 }
     }
-    async modificarDatos(id,obj){
+    async modificarDatos(obj){
+        let objs = await this.capturarTodo();
+        console.log(objs)
+        let item = objs.findIndex(o =>o.id==obj.id)
+        objs[item]=obj;
+        try {
+            await fs.writeFile(this.ruta,JSON.stringify(objs,null,2))
+        } catch (error) {
+            `No se puede modificar los datos`
+        }
 
     }
     async eliminarUno(id){
-        let objs = await this.capturarTodo()
+        let objs = await this.capturarTodo();
         let obj = objs.filter(o => o.id !=id)
         try {
             await fs.writeFile(this.ruta,JSON.stringify(obj,null,2))
@@ -60,15 +69,22 @@ class Contenedor{
 
 
 let alumno = new Contenedor('./alumnos.json') 
-alumno.guardar({name: "Juana", lastName: "Malato"})
+//alumno.guardar({name: "Juana", lastName: "Malato"})
 
-setTimeout(()=>{
+//setTimeout(()=>{
     //console.log(alumno.capturarTodo())
     //console.log(alumno.capturarPorId(1));
-},5000)
+//},5000)
 //alumno.capturarTodo()
 //.then((data)=>console.log(data))
 //.catch((err=>console.log(err)))
 //alumno.eliminarUno(2)
 //.then((data)=>console.log("se elimino el registro"))
 //.catch((err=>console.log(err)))
+alumno.modificarDatos({
+    "id": 1659221584892,
+    "name": "Bart",
+    "lastName": "Simpson"
+})
+.then(data=>console.log(data))
+.catch((err=>console.log(err)))
